@@ -35,6 +35,8 @@ namespace OdeToFood
 				app.UseDeveloperExceptionPage();
 			}
 
+			
+
 			// in-line middleware components
 			//app.Use(next => { 
 			//	return async context =>
@@ -59,6 +61,8 @@ namespace OdeToFood
 			//	Path="/wp"
 			//});
 
+			app.UseFileServer();
+			
 			app.Run(async (context) =>
 			{
 				
