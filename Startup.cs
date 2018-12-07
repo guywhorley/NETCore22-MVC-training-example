@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -36,8 +37,10 @@ namespace OdeToFood
 				app.UseDeveloperExceptionPage();
 			}
 
-			
+			// Convention-based routing
+			//MapRouteRouteBuilderExtensions.MapRoute("Default", "{controller=Home}/{action=Index/{id?}");
 
+			#region inline
 			// in-line middleware components
 			//app.Use(next => { 
 			//	return async context =>
@@ -61,10 +64,13 @@ namespace OdeToFood
 			//{
 			//	Path="/wp"
 			//});
+			#endregion
 
 			app.UseStaticFiles();
 
-			app.UseMvcWithDefaultRoute();
+			//app.UseMvcWithDefaultRoute();
+			//app.UseMvc(); // no routes configured
+			app.UseMvc(ConfigureRoutes);
 
 			app.Run(async (context) =>
 			{
@@ -73,8 +79,15 @@ namespace OdeToFood
 				// Also... you can also pass in from cli: dotnet run Greeting="<some-new-text>" [enter]
 				//var greeting = configuration["Greeting"];
 				var greeting = greeter.GetMessageOfTheDay(); //configuration["Greeting"];
-				await context.Response.WriteAsync($"{greeting} : {env.EnvironmentName}");
+				context.Response.ContentType = "text/plain";
+				//await context.Response.WriteAsync($"{greeting} : {env.EnvironmentName}");
+				await context.Response.WriteAsync($"Not found : {env.EnvironmentName}");
 			});
+		}
+
+		private void ConfigureRoutes(IRouteBuilder routeBuilder)
+		{
+			routeBuilder.MapRoute("Default", "{controller=Home}/{action=index}/{id?}");
 		}
 	}
 }
