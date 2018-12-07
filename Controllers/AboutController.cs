@@ -4,10 +4,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
+
+
 namespace OdeToFood.Controllers
 {
 	[Route("company/[controller]/[action]")]
-	public class AboutController : Controller
+	public class AboutController : ControllerBase
 	{
 		// This will be the 'default' route.
 		public IActionResult Phone()
