@@ -5,18 +5,30 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using OdeToFood.Services;
-
+using Microsoft.EntityFrameworkCore;
+using OdeToFood.Data;
+using Microsoft.Extensions.Configuration;
 
 namespace OdeToFood
 {
 	public class Startup
 	{
+		private IConfiguration _configuration;
+
+		// In order to use configuration in configure services for EF, you must inject configuration into the ctor of Startup
+		public Startup(IConfiguration configuration)
+		{			
+			_configuration = configuration;
+		}
+
 		// Built-in DI: This method gets called by the runtime. Use this method to add services to the container.
 		// For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
 		public void ConfigureServices(IServiceCollection services)
 		{
 			services.AddSingleton<IGreeter, Greeter>();
-			services.AddSingleton<IRestaurantData, InMemoryRestaurantData>();
+			services.AddDbContext<OdeToFoodDbContext>(
+				options => options.UseSqlServer(_configuration.GetConnectionString("OdeToFood")));
+			services.AddScoped<IRestaurantData, SqlRestaurantData>();
 			services.AddMvc();
 		}
 
