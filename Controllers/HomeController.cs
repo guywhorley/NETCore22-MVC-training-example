@@ -46,16 +46,28 @@ namespace OdeToFood.Controllers
 		}
 
 		[HttpPost]
+		[ValidateAntiForgeryToken] // always have this on posts for webapps
 		public IActionResult Create(RestaurantEditModel model)
 		{
-			// mapp form data to the new restaurant
-			var newRestaurant = new Restaurant();
-			newRestaurant.Name = model.Name;
-			newRestaurant.Cuisine = model.Cuisine;
+			// always check if IsValid
+			if (ModelState.IsValid)
+			{
+				// mapp form data to the new restaurant
+				var newRestaurant = new Restaurant();
+				newRestaurant.Name = model.Name;
+				newRestaurant.Cuisine = model.Cuisine;
 
-			newRestaurant = _restaurantData.Add(newRestaurant);
+				newRestaurant = _restaurantData.Add(newRestaurant);
 
-			return View("Details", newRestaurant);
+				// Post-Redirect-Get pattern
+				// without this approach, the user could refresh the page and repost.
+				return RedirectToAction(nameof(Details), new {id = newRestaurant.Id});
+			} 
+			else
+			{
+				// try to create again
+				return View();
+			}
 		}
 	}
 }
