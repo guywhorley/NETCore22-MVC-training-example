@@ -1,0 +1,12 @@
+﻿@using OdeToFood.Models
+@model OdeToFood.Models.Restaurant
+
+<h1>Create Restaurant Entry</h1>
+
+<form method="post">
+	<!-- using NETCore tag helpers which generate html -->
+	<input asp-for="Name" />
+	<select asp-for="Cuisine" asp-items="@Html.GetEnumSelectList<CuisineType>()">
+	</select>
+	<input type="submit" name="save" value="Save" />
+</form>
